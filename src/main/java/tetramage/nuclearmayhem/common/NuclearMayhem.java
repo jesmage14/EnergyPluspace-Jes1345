@@ -32,12 +32,15 @@ import tetramage.nuclearmayhem.item.WaterProofing;
 import tetramage.nuclearmayhem.item.ZincIngot;
 import tetramage.nuclearmayhem.proxy.CommonProxy;
 import tetramage.nuclearmayhem.tileentity.TileEntityHydroelectricTurbine;
+import tetramage.nuclearmayhem.tileentity.TileEntityWoodMill;
 import tetramage.nuclearmayhem.worldgen.NuclearMayhemWorldGen;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 
@@ -56,6 +59,9 @@ public static final String version = "ALPHA 1.0";
 @SidedProxy(clientSide="tetramage.nuclearmayhem.proxy.ClientProxy", serverSide="tetramage.nuclearmayhem.proxy.CommonProxy")
 public static CommonProxy proxy;
 
+@Instance(modid)
+public static NuclearMayhem instance;
+
 
 
 
@@ -71,7 +77,7 @@ public static Block CementBlock;
 public static Block blockHydroelectricTurbine;
 public static Block WoodMillIdle;
 public static Block WoodMillActive;
-
+public static final int guiIDWoodMill = 0;
 
 
 
@@ -176,7 +182,8 @@ public static Item NuclearMayhemTabPlaceHolder = new NuclearMayhemTabPlaceHolder
 	GameRegistry.registerBlock(WoodMillIdle, "WoodMillIdle");
 	
 	WoodMillActive = new WoodMill(false).setBlockName("WoodMillActive").setLightLevel(0.625F);
-	GameRegistry.registerBlock(WoodMillActive, "WoodMillActive");		
+	GameRegistry.registerBlock(WoodMillActive, "WoodMillActive");	
+	
 	
 	proxy.registerRenderThings();
 	
@@ -187,7 +194,15 @@ public static Item NuclearMayhemTabPlaceHolder = new NuclearMayhemTabPlaceHolder
 @EventHandler
 	public void init(FMLInitializationEvent e){
 	
+			NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+			
 			GameRegistry.registerItem(NuclearMayhemTabPlaceHolder, "NuclearMayhemPlaceHolder");
+			
+			
+			
+			//Machine Registry
+			
+			GameRegistry.registerTileEntity(TileEntityWoodMill.class, "WoodMill");
 			
 			//Smelting Recipes Registry
 			
